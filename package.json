@@ -4,6 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
+    "build:ui": "cp -a I:/Dev/Projects/web/FullStackOpen/osa2/phonebook/build I:/Dev/Projects/web/fullStackOpenHeroku/",
+    "deploy": "git push origin master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
+    "start": "node index.js",
+    "watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +21,18 @@
   "bugs": {
     "url": "https://github.com/Reizka/fullstackblog/issues"
   },
-  "homepage": "https://github.com/Reizka/fullstackblog#readme"
+  "homepage": "https://github.com/Reizka/fullstackblog#readme",
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "logger": "0.0.1",
+    "mongoose": "^5.7.7",
+    "mongoose-unique-validator": "^2.0.3"
+  }
 }
