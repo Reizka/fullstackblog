@@ -11,7 +11,9 @@ const blogPostsRouter = require('./controllers/blogPosts');
 console.log('connecting to', config.MONGODB_URI);
 
 mongoose
-	.connect(config.MONGODB_URI, { useNewUrlParser: true })
+	.connect(config.MONGODB_URI, {
+		useNewUrlParser: true
+	})
 	.then(result => {
 		console.log('connected to MongoDB');
 	})
@@ -24,7 +26,7 @@ app.use(bodyParser.json());
 app.use(express.static('build'));
 app.use(middleware.requestLogger);
 
-app.use('/api/blogposts',blogPostsRouter);
+app.use('/api/blogposts', blogPostsRouter);
 
 blogPostsRouter.use(middleware.unknownEndpoint);
 blogPostsRouter.use(middleware.errorHandler);

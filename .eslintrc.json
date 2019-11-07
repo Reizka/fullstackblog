@@ -3,7 +3,8 @@
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "node":true
+        "node": true,
+        "jest": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -15,17 +16,23 @@
     },
     "rules": {
         "arrow-spacing": [
-            "error", { "before": true, "after": true }
+            "error", {
+                "before": true,
+                "after": true
+            }
         ],
         "no-trailing-spaces": "error",
-        "semi-spacing": ["error", {"before": false, "after": true}],
+        "semi-spacing": ["error", {
+            "before": false,
+            "after": true
+        }],
         "indent": [
             "error",
             "tab"
         ],
         "linebreak-style": [
             "error",
-            "windows"
+            "unix"
         ],
         "quotes": [
             "error",
