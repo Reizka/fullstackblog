@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
     "git": "git add . && git commit -m 'npm build' && git push",
     "lint": "eslint .",
     "build:ui": "cp -a I:/Dev/Projects/web/FullStackOpen/osa2/phonebook/build I:/Dev/Projects/web/fullStackOpenHeroku/",
     "deploy": "git push origin master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/Reizka/fullstackblog#readme",
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "morgan": "^1.9.1",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
