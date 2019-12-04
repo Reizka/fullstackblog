@@ -40,6 +40,7 @@ const mostBlogs =(blogs) => {
 			if(b.author === author){
 				noOfBlogs++;
 			}
+
 			if(noOfBlogs>currentHighNo){
 				currentHighNo = noOfBlogs;
 				authorOfMostBlogs = author;
@@ -49,9 +50,32 @@ const mostBlogs =(blogs) => {
 	});
 	return {author: authorOfMostBlogs,blogs:currentHighNo};
 };
+
+const mostLikes = (blogs) => {
+	let authorOfMostlikes = 'none';
+	let currentHighNo = 0;
+	blogs.forEach(blog => {
+		let author = blog.author;
+		let noOfLikes = 0;
+		blogs.forEach((b) => {
+			if(b.author === author){
+				noOfLikes += b.likes;
+			}
+
+			if(noOfLikes>currentHighNo){
+				currentHighNo = noOfLikes;
+				authorOfMostlikes = author;
+			}
+		});
+
+	});
+
+	return {author: authorOfMostlikes,likes:currentHighNo};
+};
 module.exports = {
 	dummy,
 	totalLikes,
 	favouriteBlog,
-	mostBlogs
+	mostBlogs,
+	mostLikes
 };
