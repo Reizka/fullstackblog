@@ -30,7 +30,24 @@ const favouriteBlog = (blogs) =>
 };
 
 const mostBlogs =(blogs) => {
-	return {author:'Robert C. Martin',blogs:3};
+
+	let authorOfMostBlogs = 'none';
+	let currentHighNo = 0;
+	blogs.forEach(blog => {
+		let author = blog.author;
+		let noOfBlogs = 0;
+		blogs.forEach((b) => {
+			if(b.author === author){
+				noOfBlogs++;
+			}
+			if(noOfBlogs>currentHighNo){
+				currentHighNo = noOfBlogs;
+				authorOfMostBlogs = author;
+			}
+		});
+
+	});
+	return {author: authorOfMostBlogs,blogs:currentHighNo};
 };
 module.exports = {
 	dummy,
