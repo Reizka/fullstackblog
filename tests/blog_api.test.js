@@ -102,6 +102,12 @@ test('a specific blogPost can be viewed', async () => {
 	expect(resultbp.body).toEqual(blogPostToView);
 });
 
+test('returned object uses id instead of _id', async () => {
+	const blogs = await helper.blogPostsInDb();
+	const blog = blogs[0];
+	expect(blog.id).not.toBe(blog._id);
+});
+
 afterAll(() => {
 	Blog.deleteMany({});
 	mongoose.connection.close();
