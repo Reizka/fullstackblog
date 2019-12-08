@@ -1,8 +1,8 @@
 const blogPostRouter = require('express').Router();
 const BlogPost = require('../models/blogPost');
-
-blogPostRouter.get('/', async (request, response,next) => {
-	console.log('getting all posted blogs');
+const Log = require('../utils/logger');
+blogPostRouter.get('/', async (request, response, next) => {
+	//console.log('getting all posted blogs');
 	try {
 		const blogs = await BlogPost.find({});
 		response.json(blogs);
@@ -12,30 +12,36 @@ blogPostRouter.get('/', async (request, response,next) => {
 
 });
 
-blogPostRouter.get('/:id', async (request,response,next) => {
+blogPostRouter.get('/:id', async (request, response, next) => {
 	try {
-		const blog = await BlogPost.find(request.id);
+		//console.log('SEARCHING');
+		const blog = await BlogPost.findById(request.params.id);
 		response.json(blog);
 	} catch (error) {
 		next(error);
 	}
 });
 
-blogPostRouter.post('/', async (request, response,next) => {
+blogPostRouter.post('/', async (request, response, next) => {
 	const blog = new BlogPost(request.body);
-	console.log('saving current blog post: ',blog ,typeof blog);
+	Log.info('saving current blog post: ', blog, typeof blog);
 	try {
+		console.log('ADDING: ', blog);
 		const newBlog = await blog.save();
 		response.status(201).json(newBlog);
 	} catch (error) {
 		next(error);
+		response.status(400);
 	}
+
 });
 
-blogPostRouter.delete('/:id', async(request,response,next) => {
+blogPostRouter.delete('/:id', async (request, response, next) => {
 	try {
-		await BlogPost.delete(request.id);
-		response.status(204);
+		//const blogToDelete = new BlogPost(request.body);
+		//console.log(request.params.id);
+		await BlogPost.findByIdAndRemove(request.params.id);
+		response.status(204).end();
 	} catch (error) {
 		next(error);
 	}
