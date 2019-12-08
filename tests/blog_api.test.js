@@ -108,7 +108,21 @@ test('returned object uses id instead of _id', async () => {
 	expect(blog.id).not.toBe(blog._id);
 });
 
-afterAll(() => {
-	Blog.deleteMany({});
+test('likes has value 0 if not defined', async () => {
+	const newBlog = {
+		title: 'DOOM',
+		author: 'DOO, M',
+		url: 'http://www.doom.com',
+	};
+	const result = await api
+		.post('/api/blogposts')
+		.send(newBlog)
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+	console.log(result.body);
+	expect(result.body.likes).toBeDefined();
+});
+
+afterAll(async () => {
 	mongoose.connection.close();
 });

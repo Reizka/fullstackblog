@@ -16,7 +16,10 @@ const blogPostSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	likes: Number
+	likes: {
+		type: Number,
+		default: 0
+	}
 });
 
 
