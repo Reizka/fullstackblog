@@ -5,13 +5,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 
-const getTokenFrom = request => {
-	const authorization = request.get('authorization');
-	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-		return authorization.substring(7);
-	}
-	return null;
-};
+
 blogPostRouter.get('/', async (request, response, next) => {
 	//console.log('getting all posted blogs');
 	try {
@@ -39,13 +33,11 @@ blogPostRouter.get('/:id', async (request, response, next) => {
 
 blogPostRouter.post('/', async (request, response, next) => {
 	const body = request.body;
-	const token = getTokenFrom(request);
-
-
+	console.log(request.token);
 	try {
-		const decodedToken = jwt.verify(token, process.env.SECRET);
+		const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
-		if (!token || !decodedToken.id) {
+		if (!request.token || !decodedToken.id) {
 			return response.status(401).json({
 				error: 'token missing or invalid'
 			});
@@ -95,10 +87,33 @@ blogPostRouter.put('/:id', async (request, response, next) => {
 });
 blogPostRouter.delete('/:id', async (request, response, next) => {
 	try {
-		//const blogToDelete = new BlogPost(request.body);
-		//console.log(request.params.id);
-		await BlogPost.findByIdAndRemove(request.params.id);
-		response.status(204).end();
+		Log.info('DELETE REQUEST');
+		const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+		if (!request.token || !decodedToken.id) {
+			return response.status(401).json({
+				error: 'token missing or invalid'
+			});
+		}
+
+
+		const user = await User.findById(decodedToken.id);
+
+		const blogToDelete = await BlogPost.findById(request.params.id);
+		Log.info(blogToDelete.userId.toString());
+		Log.info(user.id);
+		if (blogToDelete.userId.toString() === user.id) {
+			Log.info('deleting blog');
+			await BlogPost.findByIdAndRemove(request.params.id);
+			response.status(204).end();
+		} else {
+			return response.status(401).json({
+				error: 'No priviliges to delete this blog'
+			});
+		}
+
+
+
 	} catch (error) {
 		next(error);
 	}
