@@ -1,10 +1,15 @@
 const blogPostRouter = require('express').Router();
 const BlogPost = require('../models/blogPost');
 const Log = require('../utils/logger');
+const User = require('../models/user');
 blogPostRouter.get('/', async (request, response, next) => {
 	//console.log('getting all posted blogs');
 	try {
-		const blogs = await BlogPost.find({});
+
+		const blogs = await BlogPost.find({}).populate('user', {
+			username: 1,
+			name: 1
+		});
 		response.json(blogs);
 	} catch (error) {
 		next(error);
@@ -23,12 +28,22 @@ blogPostRouter.get('/:id', async (request, response, next) => {
 });
 
 blogPostRouter.post('/', async (request, response, next) => {
-	const blog = new BlogPost(request.body);
+	const body = request.body;
+	const user = await User.findById(body.userId);
+
+	const blog = new BlogPost({
+		title: body.title,
+		url: body.url,
+		author: user.username,
+		user: user._id
+	});
 	Log.info('saving current blog post: ', blog, typeof blog);
 	try {
-		console.log('ADDING: ', blog);
-		const newBlog = await blog.save();
-		response.status(201).json(newBlog);
+		const savedBlog = await blog.save();
+		console.log('SAVED', savedBlog);
+		user.blogPosts = user.blogPosts.concat(savedBlog._id);
+		await user.save();
+		response.status(201).json(savedBlog.toJSON());
 	} catch (error) {
 		next(error);
 		response.status(400);

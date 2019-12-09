@@ -3,38 +3,42 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
 const uniqueValidator = require('mongoose-unique-validator');
 
-const blogPostSchema = mongoose.Schema({
-	title: {
+const userSchema = mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+		minlength: 2,
+		maxlength: 20
+	},
+	passwordHash: {
 		type: String,
 		required: true
 	},
-	author: {
+	username: {
 		type: String,
-		required: true
+		required: true,
+		minlength: 2,
+		maxlength: 20,
+		unique: true
 	},
-	url: {
-		type: String,
-		required: true
-	},
-	likes: {
-		type: Number,
-		default: 0
-	},
-	userId: {
+	blogposts: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User'
-	}
+		ref: 'BlogPost'
+	}]
+
 });
 
 
-blogPostSchema.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator);
 
-blogPostSchema.set('toJSON', {
+userSchema.set('toJSON', {
 	transform: (document, returnedObject) => {
 		returnedObject.id = returnedObject._id.toString();
 		delete returnedObject._id;
 		delete returnedObject.__v;
+		// the passwordHash should not be revealed
+		delete returnedObject.passwordHash;
 	}
 });
 
-module.exports = mongoose.model('BlogPost', blogPostSchema);
+module.exports = mongoose.model('User', userSchema);
