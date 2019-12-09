@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const helper = require('./test_helper');
 
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 
@@ -10,10 +11,14 @@ const api = supertest(app);
 describe('when there is initially one user at db', () => {
 	beforeEach(async () => {
 		await User.deleteMany({});
+
+		const passwordHash = await bcrypt.hash('salainen', 10);
 		const user = new User({
 			username: 'root',
-			password: 'sekret'
+			name: 'Superuser',
+			passwordHash
 		});
+		console.log('INIT USER CREATED', user);
 		await user.save();
 	});
 	test('creation fails with proper statuscode and message if username already taken', async () => {
@@ -21,8 +26,8 @@ describe('when there is initially one user at db', () => {
 
 		const newUser = {
 			username: 'root',
-			name: 'Superuser',
-			password: 'salainen',
+			name: 'Superuser2',
+			password: 'salainen'
 		};
 
 		const result = await api
@@ -31,7 +36,7 @@ describe('when there is initially one user at db', () => {
 			.expect(400)
 			.expect('Content-Type', /application\/json/);
 
-		expect(result.body.error).toContain('`username` to be unique');
+		expect(result.body.message).toContain('User validation failed: username: Error, expected `username` to be unique. Value: `root`');
 
 		const usersAtEnd = await helper.usersInDb();
 		expect(usersAtEnd.length).toBe(usersAtStart.length);

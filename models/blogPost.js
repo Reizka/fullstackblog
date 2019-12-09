@@ -21,6 +21,7 @@ const blogPostSchema = mongoose.Schema({
 		default: 0
 	},
 	userId: {
+		required: true,
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	}

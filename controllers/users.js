@@ -19,6 +19,7 @@ usersRouter.post('/', async (request, response, next) => {
 
 		response.json(savedUser);
 	} catch (exception) {
+		response.status(400).json(exception);
 		next(exception);
 	}
 });
@@ -29,7 +30,6 @@ usersRouter.get('/', async (request, response, next) => {
 		const users = await User.find({}).populate('blogposts');
 		console.log('RECEIVED', users);
 		response.json(users.map(u => u.toJSON()));
-
 	} catch (error) {
 		next(error);
 	}
